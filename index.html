@@ -3,665 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinMango Sports Betting Reality Check</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <title>Happy New Year Vlad and Scar!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
     <style>
-        :root {
-            --finmango-orange: #FF8C42;
-            --finmango-green: #8AC25E;
-            --text-black: #1A1A1A;
-            --background: #F8FAFC;
-            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --hover-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15), 0 15px 15px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
         body {
-            background: var(--background);
+            margin: 0;
             min-height: 100vh;
-            padding: 1rem;
-            line-height: 1.6;
-        }
-
-        @media (min-width: 768px) {
-            body {
-                padding: 2rem;
-            }
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 24px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-        }
-
-        .header {
-            padding: 1.5rem 1rem;
-            background: white;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            gap: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .header {
-                padding: 2.5rem;
-                gap: 1.5rem;
-            }
-        }
-
-        .logo {
-            height: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            .logo {
-                height: 60px;
-            }
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
+            justify-content: center;
         }
 
         .title {
-            color: var(--text-black);
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-            margin-bottom: 0.25rem;
-        }
-
-        @media (min-width: 768px) {
-            .title {
-                font-size: 2.5rem;
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        .subtitle {
-            color: #64748B;
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 768px) {
-            .subtitle {
-                font-size: 1.125rem;
-            }
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .stats-container {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 1.5rem;
-                padding: 2rem;
-            }
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            .stat-card {
-                padding: 2rem;
-            }
-
-            .stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--hover-shadow);
-            }
-        }
-
-        .stat-label {
-            color: #64748B;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .stat-label {
-                font-size: 1rem;
-                margin-bottom: 0.75rem;
-            }
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-black);
-            letter-spacing: -0.025em;
-        }
-
-        @media (min-width: 768px) {
-            .stat-value {
-                font-size: 2.5rem;
-            }
-        }
-
-        .chart-container {
-            padding: 1rem;
-            background: white;
-            border-radius: 16px;
-            margin: 1rem;
-            height: 300px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                padding: 2rem;
-                margin: 2rem;
-                height: 400px;
-            }
-        }
-
-        .button-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .button-container {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1rem;
-                padding: 2rem;
-            }
-        }
-
-        .button {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        @media (min-width: 768px) {
-            .button {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-            }
-        }
-
-        .button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .button-primary {
-            background: var(--finmango-orange);
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(255, 140, 66, 0.3);
-        }
-
-        .button-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 12px -1px rgba(255, 140, 66, 0.4);
-        }
-
-        .button-secondary {
-            background: white;
-            color: var(--finmango-orange);
-            border: 2px solid var(--finmango-orange);
-        }
-
-        .button-secondary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            background: rgba(255, 140, 66, 0.05);
-        }
-
-        .facts-container {
-            padding: 1.5rem;
-            background: white;
-            border-radius: 16px;
-            margin: 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (min-width: 768px) {
-            .facts-container {
-                padding: 2.5rem;
-                margin: 2rem;
-            }
-        }
-
-        .facts-title {
-            color: var(--text-black);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.25rem;
-            letter-spacing: -0.025em;
-        }
-
-        @media (min-width: 768px) {
-            .facts-title {
-                font-size: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-        }
-
-        .fact-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: rgba(248, 250, 252, 0.8);
-            border-radius: 12px;
-            transition: transform 0.2s ease;
-        }
-
-        @media (min-width: 768px) {
-            .fact-item {
-                padding: 1rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .fact-item:hover {
-                transform: translateX(5px);
-            }
-        }
-
-        .fact-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--finmango-orange);
-            border-radius: 50%;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 768px) {
-            .fact-dot {
-                width: 10px;
-                height: 10px;
-                margin-right: 1rem;
-            }
-        }
-
-        .negative-balance {
-            color: #EF4444;
-        }
-
-        .positive-balance {
-            color: #10B981;
-        }
-
-        .footer {
-            padding: 0 1rem 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .footer {
-                padding: 0 2rem 2rem;
-            }
-        }
-
-        .math-toggle {
-            width: 100%;
-            padding: 1rem;
-            background: transparent;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            color: #64748B;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .math-toggle:hover {
-            color: var(--finmango-orange);
-        }
-
-        .arrow {
-            transition: transform 0.3s ease;
-        }
-
-        .math-toggle.active .arrow {
-            transform: rotate(180deg);
-        }
-
-        .math-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-
-        .math-details.active {
-            max-height: 1000px;
-        }
-
-        .math-content {
-            background: #F8FAFC;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-        }
-
-        @media (min-width: 768px) {
-            .math-content {
-                padding: 2rem;
-                font-size: 1rem;
-            }
-        }
-
-        .math-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .math-section h5 {
-            color: var(--finmango-orange);
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        .math-section p {
-            color: #64748B;
-            margin-bottom: 0.5rem;
-        }
-
-        .math-section ul {
-            list-style: none;
-            padding-left: 1rem;
-        }
-
-        .math-section li {
-            color: #64748B;
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1rem;
-        }
-
-        .math-section li::before {
-            content: "•";
-            color: var(--finmango-orange);
+            font-size: 4.5em;
+            text-align: center;
             position: absolute;
-            left: -0.5rem;
+            top: 10%;
+            width: 100%;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, #f0f9ff, #60a5fa, #f0f9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeInDown 1.5s ease forwards;
+            text-transform: uppercase;
+        }
+
+        .title span {
+            display: block;
+            font-size: 0.5em;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            margin-top: 0.5em;
+            background: linear-gradient(to right, #fef3c7, #fbbf24, #fef3c7);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .countdown {
+            font-size: 6em;
+            font-weight: 700;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+        }
+
+        .memories {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .memory {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transform-origin: center;
+        }
+
+        .memory:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .memory img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .firework {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .message {
+            position: absolute;
+            font-size: 1.5em;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 80%;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .start-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 48px;
+            font-size: 1.25em;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 8px 40px 0 rgba(31, 38, 135, 0.45);
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 18px;
+            background: linear-gradient(45deg, #60a5fa, #fbbf24, #60a5fa);
+            z-index: -1;
+            animation: borderAnimation 3s linear infinite;
+        }
+
+        @keyframes borderAnimation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .click-instruction {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3em;
+            }
+            .countdown {
+                font-size: 4em;
+            }
+            .memory {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
 <body>
+    <canvas id="confettiCanvas"></canvas>
     <div class="container">
-        <header class="header">
-            <img src="finmango.png" alt="FinMango Logo" class="logo">
-            <div>
-                <h1 class="title">Sports Betting Reality Check</h1>
-                <p class="subtitle">Experience the mathematical reality of sports betting through this interactive simulation</p>
-            </div>
-        </header>
-
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-label">Current Balance</div>
-                <div class="stat-value" id="balance">$1,000</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Bets Placed</div>
-                <div class="stat-value" id="bets">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Bet Amount</div>
-                <div class="stat-value">$100</div>
-            </div>
-        </div>
-
-        <div class="chart-container">
-            <canvas id="balanceChart"></canvas>
-        </div>
-
-        <div class="button-container">
-            <button id="betButton" class="button button-primary">Place $100 Bet</button>
-            <button id="realityButton" class="button button-secondary">Show Long-Term Reality</button>
-            <button id="resetButton" class="button button-secondary">Reset Simulation</button>
-        </div>
-
-        <div class="facts-container">
-            <h3 class="facts-title">Important Facts About Sports Betting</h3>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>The house edge in sports betting is typically 4.5%, ensuring consistent profits for bookmakers</div>
-            </div>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>Even skilled bettors lose money over time due to this mathematical edge</div>
-            </div>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>More betting increases your likelihood of overall losses due to the house advantage</div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <button class="math-toggle" onclick="toggleMathDetails()">
-                <span>How does the math work?</span>
-                <svg class="arrow" viewBox="0 0 24 24" width="24" height="24">
-                    <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-            <div class="math-details" id="mathDetails">
-                <div class="math-content">
-                    <h4>The Mathematics Behind Sports Betting</h4>
-                    <div class="math-section">
-                        <h5>House Edge</h5>
-                        <p>In a typical sports bet:</p>
-                        <ul>
-                            <li>You bet $100 to win $91 (standard -110 odds)</li>
-                            <li>True probability of winning each bet: 47.7%</li>
-                            <li>Expected value per $100 bet: (0.477 × $91) - (0.523 × $100) = -$4.50</li>
-                        </ul>
-                    </div>
-                    <div class="math-section">
-                        <h5>Long-Term Impact</h5>
-                        <p>Over time, this 4.5% house edge compounds:</p>
-                        <ul>
-                            <li>Each bet has 95.5% expected return</li>
-                            <li>After 100 bets: Initial amount × (0.955)¹⁰⁰</li>
-                            <li>This explains why sustained betting leads to predictable losses</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h1 class="title">2025<span>Vlad & Scar</span></h1>
+        <button class="start-button">Begin Journey</button>
+        <div class="countdown"></div>
+        <div class="memories"></div>
+        <div class="click-instruction">Click anywhere for magic ✨</div>
     </div>
 
     <script>
-        let balance = 1000;
-        let betsPlaced = 0;
-        let betAmount = 100;
-        let isSimulating = false;
-        let seedArray = [];
-        
-        // Generate predetermined outcomes for consistency
-        function generateOutcomes(count) {
-            const outcomes = [];
-            let seed = 1;
-            for (let i = 0; i < count; i++) {
-                seed = (seed * 9301 + 49297) % 233280;
-                outcomes.push(seed / 233280);
+        // Initialize canvas
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const ctx = confettiCanvas.getContext('2d');
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+
+        // Photo paths - replace with your actual photo paths
+        const photos = [
+            '1.jpg',
+            '2.jpg',
+            '3.jpg',
+            '4.jpg',
+            '5.jpg'
+        ];
+
+        const messages = [
+            "Here's to another year of amazing friendship! 🎉",
+            "Thank you for all the wonderful memories! 💫",
+            "Looking forward to more adventures together! 🌟",
+            "Cheers to our incredible journey! 🥂",
+            "May 2025 bring us even more joy! ✨"
+        ];
+
+        class Firework {
+            constructor(x, y, targetX, targetY, color) {
+                this.x = x;
+                this.y = y;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.color = color;
+                this.speed = 2;
+                this.angle = Math.atan2(targetY - y, targetX - x);
+                this.particles = [];
+                this.exploded = false;
             }
-            return outcomes;
+
+            update() {
+                if (!this.exploded) {
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed;
+
+                    if (Math.abs(this.x - this.targetX) < 5 && Math.abs(this.y - this.targetY) < 5) {
+                        this.explode();
+                    }
+                } else {
+                    this.particles.forEach((particle, index) => {
+                        particle.update();
+                        if (particle.alpha <= 0) {
+                            this.particles.splice(index, 1);
+                        }
+                    });
+                }
+            }
+
+            explode() {
+                this.exploded = true;
+                for (let i = 0; i < 50; i++) {
+                    const angle = (Math.PI * 2 / 50) * i;
+                    const velocity = 3 + Math.random() * 2;
+                    this.particles.push(new Particle(
+                        this.x,
+                        this.y,
+                        Math.cos(angle) * velocity,
+                        Math.sin(angle) * velocity,
+                        this.color
+                    ));
+                }
+            }
+
+            draw(ctx) {
+                if (!this.exploded) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else {
+                    this.particles.forEach(particle => particle.draw(ctx));
+                }
+            }
         }
 
-        // Generate 100 fixed outcomes for consistency
-        seedArray = generateOutcomes(100);
+        class Particle {
+            constructor(x, y, vx, vy, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.alpha = 1;
+                this.decay = 0.02;
+            }
 
-        const ctx = document.getElementById('balanceChart').getContext('2d');
-        const balanceChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Start'],
-                datasets: [{
-                    label: 'Balance',
-                    data: [1000],
-                    borderColor: '#FF8C42',
-                    backgroundColor: 'rgba(255, 140, 66, 0.1)',
-                    tension: 0.3,
-                    borderWidth: 3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Balance ($)',
-                            font: {
-                                size: 14,
-                                weight: '500'
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Number of Bets',
-                            font: {
-                                size: 14,
-                                weight: '500'
-                            }
-                        }
-                    }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.1; // gravity
+                this.alpha -= this.decay;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const fireworks = [];
+        const colors = [
+            '#60a5fa', // Light blue
+            '#fbbf24', // Gold
+            '#f472b6', // Pink
+            '#34d399', // Green
+            '#a78bfa', // Purple
+            '#ffffff'  // White
+        ];
+
+        function addFirework(x, y) {
+            const targetX = x || Math.random() * window.innerWidth;
+            const targetY = y || Math.random() * window.innerHeight / 2;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            fireworks.push(new Firework(
+                Math.random() * window.innerWidth,
+                window.innerHeight,
+                targetX,
+                targetY,
+                color
+            ));
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+            fireworks.forEach((firework, index) => {
+                firework.update();
+                firework.draw(ctx);
+                if (firework.exploded && firework.particles.length === 0) {
+                    fireworks.splice(index, 1);
                 }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        function startCelebration() {
+            const startButton = document.querySelector('.start-button');
+            const countdown = document.querySelector('.countdown');
+            const clickInstruction = document.querySelector('.click-instruction');
+            
+            startButton.style.display = 'none';
+            countdown.style.opacity = '1';
+            
+            let count = 10;
+            const countInterval = setInterval(() => {
+                countdown.textContent = count;
+                if (count === 0) {
+                    clearInterval(countInterval);
+                    countdown.style.opacity = '0';
+                    launchCelebration();
+                    clickInstruction.style.opacity = '1';
+                }
+                count--;
+            }, 1000);
+        }
+
+        function launchCelebration() {
+            // Start fireworks
+            animate();
+            setInterval(() => addFirework(), 1000);
+
+            // Display photos in circular motion
+            const memoriesContainer = document.querySelector('.memories');
+            photos.forEach((photo, index) => {
+                const memory = document.createElement('div');
+                memory.className = 'memory';
+                const img = document.createElement('img');
+                img.src = photo;
+                memory.appendChild(img);
+                memoriesContainer.appendChild(memory);
+
+                // Position in circular pattern
+                const angle = (index / photos.length) * Math.PI * 2;
+                const radius = 200;
+                const x = window.innerWidth / 2 + Math.cos(angle) * radius;
+                const y = window.innerHeight / 2 + Math.sin(angle) * radius;
+
+                setTimeout(() => {
+                    memory.style.opacity = '1';
+                    memory.style.transform = `translate(${x - 75}px, ${y - 75}px)`;
+                }, index * 500);
+
+                // Add click handler for message
+                memory.addEventListener('click', () => {
+                    showMessage(messages[index], x, y);
+                });
+            });
+        }
+
+        function showMessage(text, x, y) {
+            const existing = document.querySelector('.message');
+            if (existing) existing.remove();
+
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = text;
+            document.body.appendChild(message);
+
+            // Position near the clicked photo
+            message.style.top = `${y - 100}px`;
+
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'scale(1)';
+            }, 10);
+
+            message.addEventListener('click', () => message.remove());
+        }
+
+        // Event Listeners
+        document.querySelector('.start-button').addEventListener('click', startCelebration);
+        window.addEventListener('click', (e) => {
+            if (document.querySelector('.countdown').style.opacity === '0') {
+                addFirework(e.clientX, e.clientY);
             }
         });
 
-        function calculateBetResult(betNumber) {
-            const winProbability = 0.477;
-            const won = seedArray[betNumber] < winProbability;
-            
-            if (won) {
-                return Math.round(balance + (betAmount * 0.91));
-            } else {
-                return Math.round(balance - betAmount);
-            }
-        }
-
-        function updateDisplay() {
-            const balanceElement = document.getElementById('balance');
-            balanceElement.textContent = `$${balance.toLocaleString()}`;
-            balanceElement.className = 'stat-value ' + 
-                (balance < 1000 ? 'negative-balance' : 'positive-balance');
-            
-            document.getElementById('bets').textContent = betsPlaced;
-            
-            balanceChart.data.labels.push(betsPlaced);
-            balanceChart.data.datasets[0].data.push(balance);
-            balanceChart.update();
-        }
-
-        function placeBet() {
-            if (balance < betAmount || isSimulating || betsPlaced >= 100) return;
-            
-            balance = calculateBetResult(betsPlaced);
-            betsPlaced++;
-            updateDisplay();
-        }
-
-        function showReality() {
-            if (isSimulating) return;
-            isSimulating = true;
-            
-            balance = 1000;
-            betsPlaced = 0;
-            balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [1000];
-            
-            let bet = 0;
-            const simulate = setInterval(() => {
-                if (bet >= 100) {
-                    clearInterval(simulate);
-                    isSimulating = false;
-                    return;
-                }
-                
-                balance = calculateBetResult(bet);
-                betsPlaced++;
-                updateDisplay();
-                bet++;
-            }, 50);
-        }
-
-        function reset() {
-            if (isSimulating) return;
-            
-            balance = 1000;
-            betsPlaced = 0;
-            balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [1000];
-            balanceChart.update();
-            updateDisplay();
-        }
-
-        function toggleMathDetails() {
-            const mathDetails = document.getElementById('mathDetails');
-            const mathToggle = document.querySelector('.math-toggle');
-            mathDetails.classList.toggle('active');
-            mathToggle.classList.toggle('active');
-        }
-
-        document.getElementById('betButton').addEventListener('click', placeBet);
-        document.getElementById('realityButton').addEventListener('click', showReality);
-        document.getElementById('resetButton').addEventListener('click', reset);
+        window.addEventListener('resize', () => {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        });
     </script>
 </body>
-</html>
-
-    
+</html>left = `${x - message.offsetWidth / 2}px`;
+            message.style.
