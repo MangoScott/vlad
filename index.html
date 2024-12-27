@@ -71,6 +71,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 100;
         }
 
         .memory {
@@ -88,6 +89,8 @@
             transform-origin: center;
             pointer-events: auto;
             animation: float 6s ease-in-out infinite;
+            z-index: 100;
+            background-color: white;
         }
 
         @keyframes float {
@@ -356,7 +359,7 @@
             top: 0;
             left: 0;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 1;
         }
 
         @media (max-width: 768px) {
@@ -390,7 +393,7 @@
     <div class="video-container">
         <div class="video-wrapper">
             <video id="celebrationVideo" controls>
-                <source src="/api/placeholder/400/320" type="video/mp4">
+                <source src="1.mp4" type="video/mp4">
                 Your browser does not support the video element.
             </video>
             <button class="close-video">×</button>
@@ -410,8 +413,14 @@
         confettiCanvas.width = window.innerWidth;
         confettiCanvas.height = window.innerHeight;
 
-        // Photo paths - replace with actual photo paths
-        const photos = Array(5).fill('/api/placeholder/400/320');
+        // Photo paths - make sure these files exist in your directory
+        const photos = [
+            '1.jpg',
+            '2.jpg',
+            '3.jpg',
+            '4.jpg',
+            '5.jpg'
+        ];
 
         const messages = [
             "Here's to another year of amazing friendship! 🎉",
@@ -631,13 +640,21 @@
                 memory.className = 'memory';
                 const img = document.createElement('img');
                 img.src = photo;
+                img.onload = () => console.log(`Photo ${index + 1} loaded successfully`);
+                img.onerror = () => console.log(`Error loading photo ${index + 1}: ${photo}`);
                 memory.appendChild(img);
                 memoriesContainer.appendChild(memory);
 
+                // Position photos in a circular pattern around the center
                 const angle = (index / photos.length) * Math.PI * 2;
-                const radius = Math.min(window.innerWidth, window.innerHeight) * 0.3;
-                const x = window.innerWidth / 2 + Math.cos(angle) * radius;
-                const y = window.innerHeight / 2 + Math.sin(angle) * radius;
+                const radius = Math.min(window.innerWidth, window.innerHeight) * 0.25;
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                // Log photo positioning for debugging
+                console.log(`Photo ${index + 1} position:`, { x, y });
 
                 setTimeout(() => {
                     memory.style.opacity = '1';
