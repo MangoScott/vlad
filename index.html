@@ -57,13 +57,16 @@
         .countdown {
             font-size: 8em;
             font-weight: 700;
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.7);
             opacity: 0;
-            transition: all 0.5s ease;
+            display: none; /* Initially hidden */
+            z-index: 2000; /* Make sure it's above everything */
+            transition: opacity 0.5s ease;
+            color: white;
         }
 
         .memories {
@@ -617,22 +620,30 @@
             const clickInstruction = document.querySelector('.click-instruction');
             
             startButton.style.display = 'none';
+            countdown.style.display = 'block'; // Make sure countdown is visible
             countdown.style.opacity = '1';
             
             let count = 10;
+            countdown.textContent = count;
+
             const countInterval = setInterval(() => {
-                countdown.textContent = count;
+                count--;
+                if (count >= 0) {
+                    countdown.textContent = count;
+                }
                 if (count === 0) {
                     clearInterval(countInterval);
-                    countdown.style.opacity = '0';
-                    launchCelebration();
-                    clickInstruction.style.opacity = '1';
-                    // Auto-play music after countdown
-                    backgroundMusic.play();
-                    document.getElementById('toggleMusic').textContent = '⏸';
-                    isMusicPlaying = true;
+                    setTimeout(() => {
+                        countdown.style.opacity = '0';
+                        countdown.style.display = 'none';
+                        launchCelebration();
+                        clickInstruction.style.opacity = '1';
+                        // Start music
+                        backgroundMusic.play().catch(e => console.log('Music autoplay failed:', e));
+                        document.getElementById('toggleMusic').textContent = '⏸';
+                        isMusicPlaying = true;
+                    }, 1000);
                 }
-                count--;
             }, 1000);
         }
 
