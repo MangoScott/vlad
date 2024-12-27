@@ -67,15 +67,15 @@
         }
 
         .memories {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 100;
+            pointer-events: none;
         }
 
         .memory {
-            position: fixed; /* Changed from absolute to fixed */
+            position: absolute;
             width: 200px;
             height: 200px;
             border-radius: 20px;
@@ -83,12 +83,23 @@
             border: 3px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: center;
             pointer-events: auto;
-            z-index: 1000; /* Increased z-index */
+            z-index: 1000;
             background-color: rgba(255, 255, 255, 0.1);
             cursor: pointer;
+        }
+
+        .memory.visible {
+            opacity: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
         @keyframes float {
@@ -634,25 +645,26 @@
 
             console.log('Starting to create memories...');
             const memoriesContainer = document.querySelector('.memories');
-            
-            // Clear any existing memories
             memoriesContainer.innerHTML = '';
-            
-            // Fixed positions for testing
+
             const positions = [
-                { x: 200, y: 200 },
-                { x: 400, y: 200 },
-                { x: 600, y: 200 },
-                { x: 300, y: 400 },
-                { x: 500, y: 400 }
+                { x: '20%', y: '20%' },
+                { x: '50%', y: '20%' },
+                { x: '80%', y: '20%' },
+                { x: '35%', y: '60%' },
+                { x: '65%', y: '60%' }
             ];
 
             photos.forEach((photo, index) => {
-                console.log(`Creating memory ${index + 1} with photo: ${photo}`);
+                console.log(`Creating memory ${index + 1}`);
                 
                 const memory = document.createElement('div');
                 memory.className = 'memory';
-                memory.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                
+                // Set initial position
+                memory.style.left = positions[index].x;
+                memory.style.top = positions[index].y;
+                memory.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 10 - 5}deg)`;
                 
                 const img = document.createElement('img');
                 img.src = photo;
@@ -661,35 +673,38 @@
                 img.style.objectFit = 'cover';
                 
                 img.onload = () => {
-                    console.log(`Photo ${index + 1} loaded successfully:`, photo);
+                    console.log(`Photo ${index + 1} loaded`);
                 };
                 
-                img.onerror = (e) => {
-                    console.error(`Error loading photo ${index + 1}:`, photo, e);
-                    // Show a colored div with the file path that failed to load
+                img.onerror = () => {
+                    console.log(`Photo ${index + 1} failed to load`);
                     memory.style.backgroundColor = '#60a5fa';
                     const text = document.createElement('div');
                     text.style.color = 'white';
                     text.style.padding = '10px';
                     text.style.textAlign = 'center';
-                    text.innerHTML = `Failed to load:<br>${photo}`;
+                    text.innerHTML = `Photo ${index + 1}`;
                     memory.appendChild(text);
                 };
                 
                 memory.appendChild(img);
                 memoriesContainer.appendChild(memory);
                 
-                const { x, y } = positions[index];
-                
-                // Make memory immediately visible for debugging
-                memory.style.opacity = '0';
-                memory.style.transform = `translate(${x}px, ${y}px)`;
-                
-                // Fade in with delay
+                // Trigger animation after a delay
                 setTimeout(() => {
-                    memory.style.opacity = '1';
-                    addFirework(x + 100, y + 100);
-                }, index * 800);
+                    memory.classList.add('visible');
+                    const rect = memory.getBoundingClientRect();
+                    addFirework(rect.left + rect.width/2, rect.top + rect.height/2);
+                }, index * 600);
+
+                memory.addEventListener('click', () => {
+                    showMessage(messages[index], 
+                        parseFloat(positions[index].x) * window.innerWidth / 100,
+                        parseFloat(positions[index].y) * window.innerHeight / 100
+                    );
+                });
+            });
+        }
 
                 memory.addEventListener('click', () => {
                     showMessage(messages[index], x, y);
