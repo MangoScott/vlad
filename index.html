@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy New Year Vlad and Scar!</title>
     <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* Mobile viewport fix */
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             font-family: system-ui, -apple-system, sans-serif;
             color: white;
@@ -15,36 +21,57 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            padding: 1rem;
+        }
+
+        /* Fix for mobile browsers */
+        html {
+            height: -webkit-fill-available;
         }
 
         .header {
             text-align: center;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
+            margin: 1rem 0;
+            width: 100%;
         }
 
         .year {
-            font-size: 4rem;
+            font-size: clamp(3rem, 10vw, 4rem);
             font-weight: bold;
             color: #60a5fa;
             text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
         }
 
         .names {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
             color: #fbbf24;
             margin-top: 0.5rem;
         }
 
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            padding: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            width: 100%;
             max-width: 1200px;
             opacity: 0;
             transform: scale(0.8);
             transition: all 0.5s ease;
+            padding: 1rem;
+        }
+
+        /* Responsive grid */
+        @media (min-width: 768px) {
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .photo-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         .photo-grid.visible {
@@ -54,8 +81,8 @@
 
         .memory-card {
             position: relative;
-            width: 250px;
-            height: 250px;
+            width: 100%;
+            aspect-ratio: 1;
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
@@ -63,11 +90,17 @@
             transition: all 0.3s ease;
             border: 3px solid #60a5fa;
             background: #1e293b;
+            max-width: 350px;
+            margin: 0 auto;
         }
 
         .memory-card:hover {
             transform: scale(1.05) rotate(0deg);
             box-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
+        }
+
+        .memory-card:active {
+            transform: scale(0.95) rotate(0deg);
         }
 
         .memory-card img {
@@ -82,15 +115,16 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             background: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
+            width: 90%;
             max-width: 400px;
             text-align: center;
             color: #1a1a1a;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             transition: transform 0.3s ease;
         }
 
@@ -107,18 +141,21 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: #1a1a1a;
+            padding: 8px 12px;
+            border-radius: 50%;
         }
 
         #start-button {
-            padding: 20px 40px;
-            font-size: 24px;
+            padding: 15px 30px;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid #60a5fa;
             border-radius: 12px;
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 2rem;
+            margin: 1rem;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #start-button:hover {
@@ -126,12 +163,16 @@
             transform: scale(1.1);
         }
 
+        #start-button:active {
+            transform: scale(0.95);
+        }
+
         #countdown {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 120px;
+            font-size: clamp(4rem, 20vw, 120px);
             font-weight: bold;
             color: #60a5fa;
             text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
@@ -139,7 +180,6 @@
             z-index: 1000;
         }
 
-        /* Enhanced Firework Effect */
         .firework {
             position: fixed;
             pointer-events: none;
@@ -168,19 +208,42 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             z-index: 1000;
-            padding: 10px;
+            padding: 12px;
             border-radius: 50%;
             transition: background-color 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #music-toggle:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #autoplay-notice {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -191,9 +254,7 @@
     </div>
 
     <button id="start-button">Begin Journey</button>
-
     <div id="countdown"></div>
-
     <div class="photo-grid">
         <!-- Will be populated by JavaScript -->
     </div>
@@ -204,35 +265,48 @@
     </div>
 
     <button id="music-toggle">🎵</button>
+    <div id="autoplay-notice">Tap to enable music 🎵</div>
 
     <script>
         // Configuration
         const memories = [
             {
-                image: '1.JPG',
+                image: '/api/placeholder/250/250',
                 message: "Here's to another year of amazing friendship! 🎉"
             },
             {
-                image: '2.JPG',
+                image: '/api/placeholder/250/250',
                 message: "Thank you for all the wonderful memories! You both are so cute 💫"
             },
             {
-                image: '3.JPG',
+                image: '/api/placeholder/250/250',
                 message: "Looking forward to more adventures together! I need to visit you more often! 🌟"
             },
             {
-                image: '5.JPG',
-                message: "May 2025 bring us even more joy! Love you all so much ✨ "
+                image: '/api/placeholder/250/250',
+                message: "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂"
             },
             {
-                image: '4.JPG',
-                message: "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂"
+                image: '/api/placeholder/250/250',
+                message: "May 2025 bring us even more joy! Love you both so much ✨"
             }
         ];
 
-        // Audio setup
-        const music = new Audio('1.mp3');
+        // Audio setup with mobile support
+        const music = new Audio('/vlad/1.mp3');
         music.loop = true;
+        let musicEnabled = false;
+
+        // Handle audio context for mobile
+        let audioContext;
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+        }
 
         // Create memory cards
         const grid = document.querySelector('.photo-grid');
@@ -278,13 +352,11 @@
             const firework = document.createElement('div');
             firework.className = 'firework';
             
-            // Random position
             const x = Math.random() * window.innerWidth;
             const y = Math.random() * window.innerHeight;
             firework.style.left = x + 'px';
             firework.style.top = y + 'px';
             
-            // Create sparks
             const sparkCount = 30;
             const colors = ['#fbbf24', '#60a5fa', '#f472b6', '#34d399', '#ffffff'];
             
@@ -292,9 +364,8 @@
                 const spark = document.createElement('div');
                 spark.className = 'spark';
                 
-                // Calculate trajectory
                 const angle = (i / sparkCount) * Math.PI * 2;
-                const velocity = 100 + Math.random() * 50;
+                const velocity = 50 + Math.random() * 30; // Reduced for mobile
                 const tx = Math.cos(angle) * velocity;
                 const ty = Math.sin(angle) * velocity;
                 
@@ -309,7 +380,49 @@
             setTimeout(() => firework.remove(), 1000);
         }
 
-        // Countdown and start functionality
+        // Music toggle with mobile support
+        const musicToggle = document.getElementById('music-toggle');
+        const autoplayNotice = document.getElementById('autoplay-notice');
+
+        function enableMusic() {
+            musicEnabled = true;
+            music.play().then(() => {
+                musicToggle.textContent = '⏸️';
+                autoplayNotice.style.display = 'none';
+            }).catch(() => {
+                // Show notice if autoplay is blocked
+                autoplayNotice.style.display = 'block';
+                setTimeout(() => {
+                    autoplayNotice.style.display = 'none';
+                }, 3000);
+            });
+        }
+
+        musicToggle.addEventListener('click', () => {
+            initAudio();
+            if (!musicEnabled) {
+                enableMusic();
+            } else if (music.paused) {
+                music.play();
+                musicToggle.textContent = '⏸️';
+            } else {
+                music.pause();
+                musicToggle.textContent = '🎵';
+            }
+        });
+
+        // Handle user interaction for audio
+        function handleUserInteraction() {
+            initAudio();
+            if (!musicEnabled) {
+                enableMusic();
+            }
+            document.removeEventListener('click', handleUserInteraction);
+        }
+
+        document.addEventListener('click', handleUserInteraction);
+
+        // Countdown and start
         const startButton = document.getElementById('start-button');
         const countdownDisplay = document.getElementById('countdown');
 
@@ -328,34 +441,55 @@
                     clearInterval(countdownInterval);
                     countdownDisplay.style.display = 'none';
                     grid.classList.add('visible');
-                    music.play();
+                    enableMusic();
                     
                     // Initial fireworks
                     for (let i = 0; i < 5; i++) {
                         setTimeout(() => createFirework(), i * 200);
                     }
 
-                    // Periodic fireworks
+                    // Periodic fireworks (reduced for mobile)
                     setInterval(() => {
-                        if (Math.random() < 0.3) { // 30% chance every 2 seconds
+                        if (Math.random() < 0.2) { // 20% chance every 3 seconds
                             createFirework();
                         }
-                    }, 2000);
+                    }, 3000);
                 }
             }, 1000);
         });
 
-        // Music toggle
-        const musicToggle = document.getElementById('music-toggle');
-        musicToggle.addEventListener('click', () => {
-            if (music.paused) {
-                music.play();
-                musicToggle.textContent = '⏸️';
-            } else {
+        // Prevent zoom on double tap (iOS)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent scroll refresh on iOS
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Lock orientation to portrait if possible
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('portrait').catch(() => {
+                // Silently fail if orientation lock is not supported
+            });
+        }
+
+        // Handle visibility change to manage music
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && musicEnabled && !music.paused) {
                 music.pause();
                 musicToggle.textContent = '🎵';
+            } else if (!document.hidden && musicEnabled) {
+                music.play().catch(() => {
+                    // Silently handle autoplay restriction
+                });
             }
         });
-    </script>
-</body>
-</html>
