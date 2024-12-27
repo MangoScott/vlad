@@ -4,85 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy New Year Vlad and Scar!</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
     <style>
         body {
             margin: 0;
             min-height: 100vh;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: 'Inter', sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             color: white;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .title {
-            font-size: 4.5em;
+        #title {
+            font-size: 5em;
+            font-weight: bold;
+            color: #60a5fa;
             text-align: center;
             position: fixed;
             top: 10%;
-            width: 100%;
-            font-weight: 800;
-            background: linear-gradient(to right, #f0f9ff, #60a5fa, #f0f9ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-transform: uppercase;
-            z-index: 10;
-        }
-
-        .title span {
-            display: block;
-            font-size: 0.5em;
-            font-weight: 500;
-            letter-spacing: 0.2em;
-            margin-top: 0.5em;
-            background: linear-gradient(to right, #fef3c7, #fbbf24, #fef3c7);
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-
-        .start-button {
-            position: fixed;
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+
+        #subtitle {
+            font-size: 0.4em;
+            color: #fbbf24;
+            margin-top: 10px;
+        }
+
+        #startButton {
             padding: 20px 40px;
-            font-size: 1.5em;
+            font-size: 24px;
             background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
+            border: 2px solid #60a5fa;
+            border-radius: 12px;
             color: white;
             cursor: pointer;
-            z-index: 100;
+            transition: all 0.3s ease;
         }
 
-        .countdown {
+        #startButton:hover {
+            background: rgba(96, 165, 250, 0.2);
+            transform: scale(1.1);
+        }
+
+        #countdown {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 10em;
+            font-size: 120px;
             font-weight: bold;
-            color: white;
-            z-index: 1000;
             display: none;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
         }
 
-        .memory {
+        .photo-container {
             position: fixed;
             width: 200px;
             height: 200px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+            opacity: 0;
+            transition: all 0.5s ease;
             cursor: pointer;
-            z-index: 50;
+            border: 3px solid #60a5fa;
         }
 
-        .memory img {
+        .photo-container:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
+        }
+
+        .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -90,185 +90,145 @@
 
         .message {
             position: fixed;
-            background: rgba(255, 255, 255, 0.9);
-            color: #1a1a1a;
             padding: 20px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            border-radius: 12px;
             max-width: 300px;
             text-align: center;
-            z-index: 1000;
+            font-size: 18px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             display: none;
-            font-size: 1.2em;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
 
-        .audio-controls {
+        #musicToggle {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-            z-index: 1000;
-        }
-
-        .audio-controls button {
+            font-size: 24px;
             background: none;
             border: none;
             color: white;
-            font-size: 24px;
             cursor: pointer;
-            padding: 5px 10px;
+            padding: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <h1 class="title">2025<span>Vlad & Scar</span></h1>
-    <button class="start-button">Begin Journey</button>
-    <div class="countdown"></div>
-    <div class="message"></div>
-    <div class="audio-controls">
-        <button id="toggleMusic">🎵</button>
+    <div id="title">
+        2025
+        <div id="subtitle">VLAD & SCAR</div>
     </div>
+    <button id="startButton">Begin Journey</button>
+    <div id="countdown"></div>
+    <div class="message"></div>
+    <button id="musicToggle">🎵</button>
 
     <script>
-        // Photos and messages
-        const photos = [
-            '/api/placeholder/200/200',
-            '/api/placeholder/200/200',
-            '/api/placeholder/200/200',
-            '/api/placeholder/200/200',
-            '/api/placeholder/200/200'
-        ];
-
-        const messages = [
-            "Here's to another year of amazing friendship! 🎉",
-            "Thank you for all the wonderful memories! You both are so cute 💫",
-            "Looking forward to more adventures together! I need to visit you more often! 🌟",
-            "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂",
-            "May 2025 bring us even more joy! Love you both so much ✨"
-        ];
+        // Configuration
+        const config = {
+            photos: ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'],
+            messages: [
+                "Here's to another year of amazing friendship! 🎉",
+                "Thank you for all the wonderful memories! You both are so cute 💫",
+                "Looking forward to more adventures together! I need to visit you more often! 🌟",
+                "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂",
+                "May 2025 bring us even more joy! Love you both so much ✨"
+            ],
+            positions: [
+                { top: '25%', left: '20%' },
+                { top: '25%', left: '50%' },
+                { top: '25%', left: '80%' },
+                { top: '65%', left: '35%' },
+                { top: '65%', left: '65%' }
+            ]
+        };
 
         // Audio setup
-        const backgroundMusic = new Audio('1.mp3');
-        backgroundMusic.loop = true;
+        const music = new Audio('1.mp3');
+        music.loop = true;
 
-        // Main functions
-        function startCountdown() {
-            console.log('Starting countdown...');
-            const startButton = document.querySelector('.start-button');
-            const countdown = document.querySelector('.countdown');
+        // Show message when photo is clicked
+        function showMessage(text, element) {
+            const message = document.querySelector('.message');
+            const rect = element.getBoundingClientRect();
+            
+            message.textContent = text;
+            message.style.display = 'block';
+            message.style.left = rect.left + (rect.width - message.offsetWidth) / 2 + 'px';
+            message.style.top = rect.bottom + 20 + 'px';
+
+            // Hide message when clicking anywhere
+            setTimeout(() => {
+                document.onclick = () => {
+                    message.style.display = 'none';
+                    document.onclick = null;
+                };
+            }, 100);
+        }
+
+        // Show photos with animation
+        function showPhotos() {
+            config.photos.forEach((photo, i) => {
+                const container = document.createElement('div');
+                container.className = 'photo-container';
+                
+                const img = document.createElement('img');
+                img.src = photo;
+                container.appendChild(img);
+                document.body.appendChild(container);
+
+                // Position the photo
+                container.style.top = config.positions[i].top;
+                container.style.left = config.positions[i].left;
+                container.style.transform = 'translate(-50%, -50%) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+
+                // Fade in with delay
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                }, i * 300);
+
+                // Add click handler
+                container.onclick = () => showMessage(config.messages[i], container);
+            });
+        }
+
+        // Start the celebration
+        document.getElementById('startButton').onclick = () => {
+            const startButton = document.getElementById('startButton');
+            const countdown = document.getElementById('countdown');
             
             startButton.style.display = 'none';
             countdown.style.display = 'block';
             
-            let count = 5; // Reduced to 5 seconds for testing
+            let count = 5;
             countdown.textContent = count;
 
             const interval = setInterval(() => {
                 count--;
                 countdown.textContent = count;
-                console.log('Countdown:', count);
                 
                 if (count === 0) {
                     clearInterval(interval);
-                    setTimeout(() => {
-                        countdown.style.display = 'none';
-                        console.log('Starting photo display...');
-                        showPhotos();
-                        backgroundMusic.play().catch(error => {
-                            console.log('Music autoplay failed:', error);
-                        });
-                    }, 1000);
+                    countdown.style.display = 'none';
+                    showPhotos();
+                    music.play();
                 }
             }, 1000);
-        }
+        };
 
-        function showPhotos() {
-            const positions = [
-                { top: '20%', left: '20%' },
-                { top: '20%', left: '50%' },
-                { top: '20%', left: '80%' },
-                { top: '60%', left: '35%' },
-                { top: '60%', left: '65%' }
-            ];
-
-            photos.forEach((photo, index) => {
-                const memory = document.createElement('div');
-                memory.className = 'memory';
-                memory.style.opacity = '0';
-                
-                // Add color background first
-                memory.style.backgroundColor = '#60a5fa';
-                
-                const img = document.createElement('img');
-                img.src = photo;
-                img.onerror = () => {
-                    console.log(`Failed to load image ${index + 1}`);
-                    const text = document.createElement('div');
-                    text.style.color = 'white';
-                    text.style.padding = '10px';
-                    text.style.textAlign = 'center';
-                    text.innerHTML = `Photo ${index + 1}`;
-                    memory.appendChild(text);
-                };
-                img.onload = () => {
-                    console.log(`Successfully loaded image ${index + 1}`);
-                };
-                
-                memory.appendChild(img);
-                document.body.appendChild(memory);
-
-                // Position memory
-                memory.style.top = positions[index].top;
-                memory.style.left = positions[index].left;
-                memory.style.transform = 'translate(-50%, -50%)';
-                
-                // Fade in with delay
-                setTimeout(() => {
-                    memory.style.opacity = '1';
-                    memory.style.transition = 'opacity 0.5s ease';
-                }, index * 300);
-
-                // Add click handler for messages
-                memory.addEventListener('click', () => {
-                    showMessage(messages[index], memory);
-                });
-            });
-        }
-        }
-
-        function showMessage(text, memory) {
-            const message = document.querySelector('.message');
-            const rect = memory.getBoundingClientRect();
-            
-            message.textContent = text;
-            message.style.display = 'block';
-            message.style.top = rect.bottom + 20 + 'px';
-            message.style.left = rect.left + (rect.width - message.offsetWidth) / 2 + 'px';
-
-            // Hide message when clicking anywhere
-            const hideMessage = () => {
-                message.style.display = 'none';
-                document.removeEventListener('click', hideMessage);
-            };
-            
-            setTimeout(() => {
-                document.addEventListener('click', hideMessage);
-            }, 100);
-        }
-
-        // Event listeners
-        document.querySelector('.start-button').addEventListener('click', startCountdown);
-        document.getElementById('toggleMusic').addEventListener('click', () => {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play();
-                document.getElementById('toggleMusic').textContent = '⏸';
+        // Music toggle
+        document.getElementById('musicToggle').onclick = () => {
+            if (music.paused) {
+                music.play();
+                document.getElementById('musicToggle').textContent = '⏸';
             } else {
-                backgroundMusic.pause();
-                document.getElementById('toggleMusic').textContent = '🎵';
+                music.pause();
+                document.getElementById('musicToggle').textContent = '🎵';
             }
-        });
+        };
     </script>
 </body>
 </html>
