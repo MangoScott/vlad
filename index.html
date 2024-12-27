@@ -2,134 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Happy New Year Vlad and Scar!</title>
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            margin: 0;
-            min-height: 100vh;
-            min-height: -webkit-fill-available; /* Mobile viewport fix */
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             font-family: system-ui, -apple-system, sans-serif;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            padding: 1rem;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Fix for mobile browsers */
-        html {
-            height: -webkit-fill-available;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
         }
 
         .header {
-            text-align: center;
-            margin: 1rem 0;
-            width: 100%;
+            margin: 20px 0;
         }
 
         .year {
-            font-size: clamp(3rem, 10vw, 4rem);
+            font-size: clamp(3rem, 10vw, 5rem);
             font-weight: bold;
             color: #60a5fa;
             text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
         }
 
         .names {
-            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            font-size: clamp(1.2rem, 5vw, 2rem);
             color: #fbbf24;
-            margin-top: 0.5rem;
+            margin-top: 10px;
         }
 
-        .photo-grid {
+        #startButton {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #60a5fa;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        #startButton:hover {
+            background: rgba(96, 165, 250, 0.2);
+            transform: scale(1.05);
+        }
+
+        #countdown {
+            font-size: clamp(4rem, 20vw, 8rem);
+            font-weight: bold;
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: none;
+        }
+
+        .grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            width: 100%;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.9);
             transition: all 0.5s ease;
-            padding: 1rem;
         }
 
-        /* Responsive grid */
-        @media (min-width: 768px) {
-            .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .photo-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .photo-grid.visible {
+        .grid.visible {
             opacity: 1;
             transform: scale(1);
         }
 
         .memory-card {
-            position: relative;
-            width: 100%;
             aspect-ratio: 1;
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            transform: rotate(-3deg);
-            transition: all 0.3s ease;
             border: 3px solid #60a5fa;
             background: #1e293b;
-            max-width: 350px;
+            transition: all 0.3s ease;
             margin: 0 auto;
-        }
-
-        .memory-card:hover {
-            transform: scale(1.05) rotate(0deg);
-            box-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
-        }
-
-        .memory-card:active {
-            transform: scale(0.95) rotate(0deg);
+            max-width: 300px;
+            position: relative;
         }
 
         .memory-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .memory-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            color: #1a1a1a;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1000;
-            font-size: 1.1rem;
             transition: transform 0.3s ease;
         }
 
-        .memory-message.visible {
-            transform: translate(-50%, -50%) scale(1);
+        .memory-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 90%;
+            width: 400px;
+            color: black;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .dialog.visible {
+            display: block;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .dialog p {
+            font-size: 1.2rem;
+            margin: 10px 0;
         }
 
         .close-button {
@@ -140,268 +150,218 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #1a1a1a;
-            padding: 8px 12px;
-            border-radius: 50%;
+            color: #666;
+            padding: 5px 10px;
         }
 
-        #start-button {
-            padding: 15px 30px;
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #60a5fa;
-            border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 1rem;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #start-button:hover {
-            background: rgba(96, 165, 250, 0.2);
-            transform: scale(1.1);
-        }
-
-        #start-button:active {
-            transform: scale(0.95);
-        }
-
-        #countdown {
+        .overlay {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(4rem, 20vw, 120px);
-            font-weight: bold;
-            color: #60a5fa;
-            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
             display: none;
-            z-index: 1000;
+            z-index: 999;
         }
 
-        .firework {
-            position: fixed;
-            pointer-events: none;
+        .overlay.visible {
+            display: block;
         }
 
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            animation: spark 1s ease-out forwards;
-        }
-
-        @keyframes spark {
-            0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(0);
-                opacity: 0;
-            }
-        }
-
-        #music-toggle {
+        #musicToggle {
             position: fixed;
             bottom: 20px;
             left: 20px;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 1000;
-            padding: 12px;
-            border-radius: 50%;
-            transition: background-color 0.3s ease;
+            font-size: 24px;
             width: 50px;
             height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
         }
 
-        #music-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .spark {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
         }
 
-        #autoplay-notice {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #1a1a1a;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes spark {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="year">2025</div>
-        <div class="names">VLAD & SCAR</div>
+    <div class="container">
+        <div class="header">
+            <div class="year">2025</div>
+            <div class="names">VLAD & SCAR</div>
+        </div>
+
+        <button id="startButton">Begin Journey</button>
+        <div id="countdown"></div>
+        <div class="grid">
+            <!-- Memory cards will be added here -->
+        </div>
     </div>
 
-    <button id="start-button">Begin Journey</button>
-    <div id="countdown"></div>
-    <div class="photo-grid">
-        <!-- Will be populated by JavaScript -->
-    </div>
-
-    <div class="memory-message">
+    <div class="overlay"></div>
+    <div class="dialog">
         <button class="close-button">×</button>
         <p></p>
     </div>
 
-    <button id="music-toggle">🎵</button>
-    <div id="autoplay-notice">Tap to enable music 🎵</div>
+    <button id="musicToggle">🎵</button>
 
     <script>
-        // Configuration
         const memories = [
             {
-                image: '1.JPG',
+                image: '1.jpg',
                 message: "Here's to another year of amazing friendship! 🎉"
             },
             {
-                image: '2.JPG',
+                image: '2.jpg',
                 message: "Thank you for all the wonderful memories! You both are so cute 💫"
             },
             {
-                image: '3.JPG',
+                image: '3.jpg',
                 message: "Looking forward to more adventures together! I need to visit you more often! 🌟"
             },
             {
-                image: '5.JPG',
+                image: '4.jpg',
                 message: "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂"
             },
             {
-                image: '4.JPG',
+                image: '5.jpg',
                 message: "May 2025 bring us even more joy! Love you both so much ✨"
             }
         ];
 
-        // Audio setup with mobile support
-        const music = new Audio('1.mp3');
+        // Initialize audio
+        const music = new Audio('/vlad/1.mp3');
         music.loop = true;
-        let musicEnabled = false;
-
-        // Handle audio context for mobile
-        let audioContext;
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-            }
-        }
 
         // Create memory cards
-        const grid = document.querySelector('.photo-grid');
-        memories.forEach((memory, index) => {
+        const grid = document.querySelector('.grid');
+        memories.forEach(memory => {
             const card = document.createElement('div');
             card.className = 'memory-card';
             
             const img = document.createElement('img');
             img.src = memory.image;
-            img.alt = `Memory ${index + 1}`;
+            img.onerror = () => img.src = '/api/placeholder/300/300';
             
             card.appendChild(img);
-            grid.appendChild(card);
-
             card.addEventListener('click', () => showMessage(memory.message));
+            grid.appendChild(card);
         });
 
-        // Message handling
-        const messageBox = document.querySelector('.memory-message');
-        const messageText = messageBox.querySelector('p');
+        // Message display
+        const overlay = document.querySelector('.overlay');
+        const dialog = document.querySelector('.dialog');
+        const dialogText = dialog.querySelector('p');
         const closeButton = document.querySelector('.close-button');
 
         function showMessage(message) {
-            messageText.textContent = message;
-            messageBox.style.display = 'block';
-            setTimeout(() => messageBox.classList.add('visible'), 10);
-            createFirework();
+            dialogText.textContent = message;
+            overlay.classList.add('visible');
+            dialog.classList.add('visible');
             createFirework();
         }
 
         function hideMessage() {
-            messageBox.classList.remove('visible');
-            setTimeout(() => messageBox.style.display = 'none', 300);
+            overlay.classList.remove('visible');
+            dialog.classList.remove('visible');
         }
 
         closeButton.addEventListener('click', hideMessage);
-        window.addEventListener('click', (e) => {
-            if (e.target === messageBox) hideMessage();
-        });
+        overlay.addEventListener('click', hideMessage);
 
-        // Enhanced firework effect
+        // Firework effect
         function createFirework() {
-            const firework = document.createElement('div');
-            firework.className = 'firework';
-            
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            firework.style.left = x + 'px';
-            firework.style.top = y + 'px';
-            
-            const sparkCount = 30;
             const colors = ['#fbbf24', '#60a5fa', '#f472b6', '#34d399', '#ffffff'];
-            
-            for (let i = 0; i < sparkCount; i++) {
+            const numSparks = 20;
+
+            for (let i = 0; i < numSparks; i++) {
                 const spark = document.createElement('div');
                 spark.className = 'spark';
                 
-                const angle = (i / sparkCount) * Math.PI * 2;
-                const velocity = 50 + Math.random() * 30; // Reduced for mobile
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
-                
-                spark.style.setProperty('--tx', `${tx}px`);
-                spark.style.setProperty('--ty', `${ty}px`);
+                // Random position near the dialog
+                const angle = (i / numSparks) * Math.PI * 2;
+                const distance = 100 + Math.random() * 50;
+                const startX = window.innerWidth / 2 + Math.cos(angle) * 20;
+                const startY = window.innerHeight / 2 + Math.sin(angle) * 20;
+                const endX = startX + Math.cos(angle) * distance;
+                const endY = startY + Math.sin(angle) * distance;
+
+                spark.style.left = startX + 'px';
+                spark.style.top = startY + 'px';
                 spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 
-                firework.appendChild(spark);
+                document.body.appendChild(spark);
+
+                // Animate
+                spark.animate([
+                    { transform: `translate(0, 0)` },
+                    { transform: `translate(${endX - startX}px, ${endY - startY}px)` }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => spark.remove();
             }
-            
-            document.body.appendChild(firework);
-            setTimeout(() => firework.remove(), 1000);
         }
 
-        // Music toggle with mobile support
-        const musicToggle = document.getElementById('music-toggle');
-        const autoplayNotice = document.getElementById('autoplay-notice');
+        // Start button and countdown
+        const startButton = document.getElementById('startButton');
+        const countdown = document.getElementById('countdown');
 
-        function enableMusic() {
-            musicEnabled = true;
+        startButton.addEventListener('click', () => {
+            startButton.style.display = 'none';
+            countdown.style.display = 'flex';
+            
+            let count = 5;
+            countdown.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                countdown.textContent = count;
+                
+                if (count === 0) {
+                    clearInterval(interval);
+                    countdown.style.display = 'none';
+                    grid.classList.add('visible');
+                    tryPlayMusic();
+                }
+            }, 1000);
+        });
+
+        // Music handling
+        const musicToggle = document.getElementById('musicToggle');
+        let musicEnabled = false;
+
+        function tryPlayMusic() {
             music.play().then(() => {
+                musicEnabled = true;
                 musicToggle.textContent = '⏸️';
-                autoplayNotice.style.display = 'none';
             }).catch(() => {
-                // Show notice if autoplay is blocked
-                autoplayNotice.style.display = 'block';
-                setTimeout(() => {
-                    autoplayNotice.style.display = 'none';
-                }, 3000);
+                // Autoplay blocked, wait for user interaction
             });
         }
 
         musicToggle.addEventListener('click', () => {
-            initAudio();
             if (!musicEnabled) {
-                enableMusic();
+                tryPlayMusic();
             } else if (music.paused) {
                 music.play();
                 musicToggle.textContent = '⏸️';
@@ -411,85 +371,15 @@
             }
         });
 
-        // Handle user interaction for audio
-        function handleUserInteraction() {
-            initAudio();
-            if (!musicEnabled) {
-                enableMusic();
-            }
-            document.removeEventListener('click', handleUserInteraction);
-        }
-
-        document.addEventListener('click', handleUserInteraction);
-
-        // Countdown and start
-        const startButton = document.getElementById('start-button');
-        const countdownDisplay = document.getElementById('countdown');
-
-        startButton.addEventListener('click', () => {
-            startButton.style.display = 'none';
-            countdownDisplay.style.display = 'block';
-            
-            let count = 5;
-            countdownDisplay.textContent = count;
-
-            const countdownInterval = setInterval(() => {
-                count--;
-                countdownDisplay.textContent = count;
-                
-                if (count === 0) {
-                    clearInterval(countdownInterval);
-                    countdownDisplay.style.display = 'none';
-                    grid.classList.add('visible');
-                    enableMusic();
-                    
-                    // Initial fireworks
-                    for (let i = 0; i < 5; i++) {
-                        setTimeout(() => createFirework(), i * 200);
-                    }
-
-                    // Periodic fireworks (reduced for mobile)
-                    setInterval(() => {
-                        if (Math.random() < 0.2) { // 20% chance every 3 seconds
-                            createFirework();
-                        }
-                    }, 3000);
-                }
-            }, 1000);
-        });
-
-        // Prevent zoom on double tap (iOS)
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (event) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Prevent scroll refresh on iOS
-        document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // Lock orientation to portrait if possible
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('portrait').catch(() => {
-                // Silently fail if orientation lock is not supported
-            });
-        }
-
-        // Handle visibility change to manage music
+        // Handle visibility changes
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden && musicEnabled && !music.paused) {
+            if (document.hidden && musicEnabled) {
                 music.pause();
                 musicToggle.textContent = '🎵';
-            } else if (!document.hidden && musicEnabled) {
-                music.play().catch(() => {
-                    // Silently handle autoplay restriction
-                });
+            } else if (!document.hidden && musicEnabled && !music.paused) {
+                music.play().catch(() => {});
             }
         });
+    </script>
+</body>
+</html>
