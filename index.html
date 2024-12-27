@@ -28,6 +28,7 @@
             left: 50%;
             transform: translateX(-50%);
             text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+            z-index: 10;
         }
 
         #subtitle {
@@ -45,6 +46,7 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            z-index: 10;
         }
 
         #startButton:hover {
@@ -62,6 +64,7 @@
             display: none;
             color: #60a5fa;
             text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            z-index: 10;
         }
 
         .photo-container {
@@ -75,10 +78,17 @@
             transition: all 0.5s ease;
             cursor: pointer;
             border: 3px solid #60a5fa;
+            transform: scale(0) rotate(0deg);
+            z-index: 5;
+        }
+
+        .photo-container.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotate(var(--rotation));
         }
 
         .photo-container:hover {
-            transform: scale(1.1) !important;
+            transform: translate(-50%, -50%) scale(1.1) rotate(var(--rotation)) !important;
             box-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
         }
 
@@ -100,6 +110,12 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
+            animation: messagePopup 0.3s ease-out;
+        }
+
+        @keyframes messagePopup {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         #musicToggle {
@@ -113,6 +129,31 @@
             cursor: pointer;
             padding: 10px;
             z-index: 1000;
+        }
+
+        /* Fireworks styles */
+        .firework {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .explosion {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explosion 1s ease-out forwards;
+        }
+
+        @keyframes explosion {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -130,11 +171,11 @@
         // Configuration
         const config = {
             photos: [
-                '1.jpg',
-                '2.jpg',
-                '3.jpg',
-                '4.jpg',
-                '5.jpg'
+                '/api/placeholder/200/200',
+                '/api/placeholder/200/200',
+                '/api/placeholder/200/200',
+                '/api/placeholder/200/200',
+                '/api/placeholder/200/200'
             ],
             messages: [
                 "Here's to another year of amazing friendship! 🎉",
@@ -155,6 +196,48 @@
         // Audio setup
         const music = new Audio('/vlad/1.mp3');
         music.loop = true;
+
+        // Fireworks
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            
+            // Random position
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            firework.style.left = x + 'px';
+            firework.style.top = y + 'px';
+            
+            // Create particles
+            const particles = 30;
+            const colors = ['#ff0', '#f0f', '#0ff', '#fff'];
+            
+            for(let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'explosion';
+                
+                // Random angle and distance
+                const angle = (i / particles) * Math.PI * 2;
+                const distance = 100 + Math.random() * 50;
+                
+                // Calculate final position
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                firework.appendChild(particle);
+            }
+            
+            document.body.appendChild(firework);
+            
+            // Remove after animation
+            setTimeout(() => {
+                firework.remove();
+            }, 1000);
+        }
 
         // Show message when photo is clicked
         function showMessage(text, element) {
@@ -181,39 +264,33 @@
                 const container = document.createElement('div');
                 container.className = 'photo-container';
                 
+                // Set random rotation
+                const rotation = Math.random() * 20 - 10;
+                container.style.setProperty('--rotation', `${rotation}deg`);
+                
                 const img = document.createElement('img');
                 img.src = photo;
-                img.onerror = () => {
-                    console.error(`Failed to load image: ${photo}`);
-                    container.style.backgroundColor = '#60a5fa';
-                    const fallback = document.createElement('div');
-                    fallback.style.width = '100%';
-                    fallback.style.height = '100%';
-                    fallback.style.display = 'flex';
-                    fallback.style.alignItems = 'center';
-                    fallback.style.justifyContent = 'center';
-                    fallback.style.color = 'white';
-                    fallback.style.textAlign = 'center';
-                    fallback.innerHTML = `Photo ${i + 1}`;
-                    container.appendChild(fallback);
-                };
-                img.onload = () => console.log(`Successfully loaded: ${photo}`);
                 container.appendChild(img);
                 document.body.appendChild(container);
 
                 // Position the photo
                 container.style.top = config.positions[i].top;
                 container.style.left = config.positions[i].left;
-                container.style.transform = 'translate(-50%, -50%) rotate(' + (Math.random() * 20 - 10) + 'deg)';
-
-                // Fade in with delay
-                setTimeout(() => {
-                    container.style.opacity = '1';
-                }, i * 300);
 
                 // Add click handler
-                container.onclick = () => showMessage(config.messages[i], container);
+                container.onclick = () => {
+                    showMessage(config.messages[i], container);
+                    createFirework(); // Create firework on click
+                };
+
+                // Animate in with delay
+                setTimeout(() => {
+                    container.classList.add('show');
+                }, i * 300);
             });
+
+            // Start periodic fireworks
+            setInterval(createFirework, 2000);
         }
 
         // Start the celebration
@@ -236,6 +313,10 @@
                     countdown.style.display = 'none';
                     showPhotos();
                     music.play();
+                    // Initial fireworks
+                    for(let i = 0; i < 5; i++) {
+                        setTimeout(createFirework, i * 200);
+                    }
                 }
             }, 1000);
         };
