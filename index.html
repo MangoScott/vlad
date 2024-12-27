@@ -39,7 +39,7 @@
             color: transparent;
             opacity: 0;
             transform: translateY(-50px);
-            animation: fadeInDown 1.5s ease forwards;
+            animation: fadeInDown 1.5s ease forwards, glow 2s ease-in-out infinite alternate;
             text-transform: uppercase;
         }
 
@@ -81,21 +81,36 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             transform-origin: center;
             pointer-events: auto;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
         .memory:hover {
-            transform: scale(1.05) rotate(2deg);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 15px 45px rgba(96, 165, 250, 0.4);
+            border: 2px solid rgba(96, 165, 250, 0.5);
+            z-index: 10;
         }
 
         .memory img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .memory:hover img {
+            transform: scale(1.1);
         }
 
         .firework {
@@ -118,6 +133,7 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            animation: messagePopIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .video-container {
@@ -143,6 +159,12 @@
             overflow: hidden;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-container.active .video-wrapper {
+            transform: scale(1);
         }
 
         .video-wrapper video {
@@ -199,6 +221,34 @@
             transform: scale(1.05);
         }
 
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+        }
+
+        .audio-controls button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .audio-controls button:hover {
+            transform: scale(1.2);
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -207,6 +257,29 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #60a5fa;
+            }
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 30px #60a5fa, 0 0 40px #60a5fa;
+            }
+        }
+
+        @keyframes messagePopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(50px);
+            }
+            70% {
+                transform: scale(1.1) translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
             }
         }
 
@@ -255,14 +328,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        #confettiCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
         .click-instruction {
             position: absolute;
             bottom: 20px;
@@ -292,6 +357,14 @@
                 height: 100px;
             }
         }
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -304,17 +377,21 @@
         <div class="click-instruction">Click anywhere for magic ✨</div>
     </div>
 
-    <!-- Video Container -->
     <div class="video-container">
         <div class="video-wrapper">
             <video id="celebrationVideo" controls>
-                <!-- Replace the source below with your video path -->
-                <source src="1.mp4" type="video/mp4">
+                <source src="celebration.mp4" type="video/mp4">
                 Your browser does not support the video element.
             </video>
             <button class="close-video">×</button>
         </div>
     </div>
+
+    <div class="audio-controls">
+        <button id="toggleMusic">🎵</button>
+        <button id="toggleSound">🔊</button>
+    </div>
+
     <button class="video-button">Play Memory Video ▶</button>
 
     <script>
@@ -326,20 +403,47 @@
 
         // Photo paths - replace with your actual photo paths
         const photos = [
-            '1.jpg',  // Replace with your image path
-            '2.jpg',  // Replace with your image path
-            '3.jpg',  // Replace with your image path
-            '4.jpg',  // Replace with your image path
-            '5.jpg'   // Replace with your image path
+            'photo1.jpg',
+            'photo2.jpg',
+            'photo3.jpg',
+            'photo4.jpg',
+            'photo5.jpg'
         ];
 
         const messages = [
             "Here's to another year of amazing friendship! 🎉",
             "Thank you for all the wonderful memories! You both are so cute 💫",
-            "Looking forward to more adventures together! I need to visit you moe often! 🌟",
-            "Cheers to our incredible journey! I'm still in disbeleif that you asked me to play such an important part of your wedding 🥂",
+            "Looking forward to more adventures together! I need to visit you more often! 🌟",
+            "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂",
             "May 2025 bring us even more joy! Love you both so much ✨"
         ];
+
+        // Audio setup
+        const backgroundMusic = new Audio();
+        backgroundMusic.src = 'background-music.mp3'; // Replace with your music file
+        backgroundMusic.loop = true;
+
+        const fireworkSound = new Audio();
+        fireworkSound.src = 'firework-sound.mp3'; // Replace with your sound effect file
+
+        let isMusicPlaying = false;
+        let isSoundEnabled = true;
+
+        document.getElementById('toggleMusic').addEventListener('click', () => {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+                document.getElementById('toggleMusic').textContent = '🎵';
+            } else {
+                backgroundMusic.play();
+                document.getElementById('toggleMusic').textContent = '⏸';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
+
+        document.getElementById('toggleSound').addEventListener('click', () => {
+            isSoundEnabled = !isSoundEnabled;
+            document.getElementById('toggleSound').textContent = isSoundEnabled ? '🔊' : '🔇';
+        });
 
         class Firework {
             constructor(x, y, targetX, targetY, color) {
@@ -439,16 +543,28 @@
         ];
 
         function addFirework(x, y) {
+            if (isSoundEnabled) {
+                const sound = fireworkSound.cloneNode();
+                sound.volume = 0.3;
+                sound.play();
+            }
+            
             const targetX = x || Math.random() * window.innerWidth;
             const targetY = y || Math.random() * window.innerHeight / 2;
             const color = colors[Math.floor(Math.random() * colors.length)];
-            fireworks.push(new Firework(
-                Math.random() * window.innerWidth,
-                window.innerHeight,
-                targetX,
-                targetY,
-                color
-            ));
+            
+            // Create multiple fireworks for a more spectacular effect
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    fireworks.push(new Firework(
+                        Math.random() * window.innerWidth,
+                        window.innerHeight,
+                        targetX + (Math.random() - 0.5) * 100,
+                        targetY + (Math.random() - 0.5) * 100,
+                        color
+                    ));
+                }, i * 100);
+            }
         }
 
         function animate() {
@@ -464,6 +580,26 @@
             });
 
             requestAnimationFrame(animate);
+        }
+
+        function showMessage(text, x, y) {
+            const existing = document.querySelector('.message');
+            if (existing) existing.remove();
+
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = text;
+            document.body.appendChild(message);
+
+            message.style.left = `${x - message.offsetWidth / 2}px`;
+            message.style.top = `${y - 100}px`;
+
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'scale(1)';
+            }, 10);
+
+            message.addEventListener('click', () => message.remove());
         }
 
         function startCelebration() {
@@ -488,15 +624,12 @@
         }
 
         function launchCelebration() {
-            // Start fireworks
             animate();
-            setInterval(() => addFirework(), 1000);
+            setInterval(() => addFirework(), 1500);
 
-            // Show video button
             const videoButton = document.querySelector('.video-button');
             videoButton.style.display = 'block';
 
-            // Display photos in circular motion
             const memoriesContainer = document.querySelector('.memories');
             photos.forEach((photo, index) => {
                 const memory = document.createElement('div');
@@ -506,43 +639,22 @@
                 memory.appendChild(img);
                 memoriesContainer.appendChild(memory);
 
-                // Position in circular pattern
                 const angle = (index / photos.length) * Math.PI * 2;
-                const radius = 200;
+                const radius = 250 + Math.random() * 50;
                 const x = window.innerWidth / 2 + Math.cos(angle) * radius;
                 const y = window.innerHeight / 2 + Math.sin(angle) * radius;
 
                 setTimeout(() => {
                     memory.style.opacity = '1';
                     memory.style.transform = `translate(${x - 75}px, ${y - 75}px)`;
-                }, index * 500);
+                    addFirework(x, y);
+                }, index * 800);
 
-                // Add click handler for message
                 memory.addEventListener('click', () => {
                     showMessage(messages[index], x, y);
+                    addFirework(x, y - 100);
                 });
             });
-        }
-
-        function showMessage(text, x, y) {
-            const existing = document.querySelector('.message');
-            if (existing) existing.remove();
-
-            const message = document.createElement('div');
-            message.className = 'message';
-            message.textContent = text;
-            document.body.appendChild(message);
-
-            // Position near the clicked photo
-            message.style.left = `${x - message.offsetWidth / 2}px`;
-            message.style.top = `${y - 100}px`;
-
-            setTimeout(() => {
-                message.style.opacity = '1';
-                message.style.transform = 'scale(1)';
-            }, 10);
-
-            message.addEventListener('click', () => message.remove());
         }
 
         // Video functionality
@@ -553,17 +665,21 @@
 
         videoButton.addEventListener('click', () => {
             videoContainer.style.display = 'flex';
+            videoContainer.classList.add('active');
             video.play();
+            video.muted = true; // Mute the video
         });
 
         closeVideo.addEventListener('click', () => {
             videoContainer.style.display = 'none';
+            videoContainer.classList.remove('active');
             video.pause();
             video.currentTime = 0;
         });
 
         // Event Listeners
         document.querySelector('.start-button').addEventListener('click', startCelebration);
+        
         window.addEventListener('click', (e) => {
             if (document.querySelector('.countdown').style.opacity === '0') {
                 addFirework(e.clientX, e.clientY);
