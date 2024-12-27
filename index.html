@@ -11,193 +11,187 @@
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             font-family: system-ui, -apple-system, sans-serif;
             color: white;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        #title {
-            font-size: 5em;
-            font-weight: bold;
-            color: #60a5fa;
+        .header {
             text-align: center;
-            position: fixed;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-            z-index: 10;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
 
-        #subtitle {
-            font-size: 0.4em;
-            color: #fbbf24;
-            margin-top: 10px;
-        }
-
-        #startButton {
-            padding: 20px 40px;
-            font-size: 24px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #60a5fa;
-            border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        #startButton:hover {
-            background: rgba(96, 165, 250, 0.2);
-            transform: scale(1.1);
-        }
-
-        #countdown {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 120px;
+        .year {
+            font-size: 4rem;
             font-weight: bold;
-            display: none;
             color: #60a5fa;
-            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
-            z-index: 10;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
         }
 
-        .photo-container {
-            position: fixed;
-            width: 200px;
-            height: 200px;
+        .names {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            margin-top: 0.5rem;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+        }
+
+        .memory-card {
+            position: relative;
+            width: 250px;
+            height: 250px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-            opacity: 0;
-            transition: all 0.5s ease;
             cursor: pointer;
+            transform: rotate(-3deg);
+            transition: all 0.3s ease;
             border: 3px solid #60a5fa;
-            transform: scale(0) rotate(0deg);
-            z-index: 5;
+            background: #1e293b;
         }
 
-        .photo-container.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1) rotate(var(--rotation));
+        .memory-card:hover {
+            transform: scale(1.05) rotate(0deg);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
         }
 
-        .photo-container:hover {
-            transform: translate(-50%, -50%) scale(1.1) rotate(var(--rotation)) !important;
-            box-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
-        }
-
-        .photo-container img {
+        .memory-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .message {
+        .memory-message {
             position: fixed;
-            padding: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.95);
-            color: #1a1a1a;
+            padding: 2rem;
             border-radius: 12px;
-            max-width: 300px;
+            max-width: 400px;
             text-align: center;
-            font-size: 18px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            color: #1a1a1a;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
-            animation: messagePopup 0.3s ease-out;
+            font-size: 1.2rem;
         }
 
-        @keyframes messagePopup {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        #musicToggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-size: 24px;
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
             background: none;
             border: none;
-            color: white;
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 10px;
-            z-index: 1000;
+            color: #1a1a1a;
         }
 
-        /* Fireworks styles */
+        /* Simple Firework Effect */
+        @keyframes firework {
+            0% { transform: translate(-50%, -50%); width: 0; opacity: 1; }
+            50% { width: 100px; opacity: 0.8; }
+            100% { width: 200px; opacity: 0; }
+        }
+
         .firework {
             position: absolute;
             pointer-events: none;
-        }
-
-        .explosion {
-            position: absolute;
-            width: 4px;
-            height: 4px;
+            background: radial-gradient(circle, #fbbf24, transparent);
             border-radius: 50%;
-            animation: explosion 1s ease-out forwards;
-        }
-
-        @keyframes explosion {
-            0% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty));
-                opacity: 0;
-            }
+            aspect-ratio: 1;
         }
     </style>
 </head>
 <body>
-    <div id="title">
-        2025
-        <div id="subtitle">VLAD & SCAR</div>
+    <div class="header">
+        <div class="year">2025</div>
+        <div class="names">VLAD & SCAR</div>
     </div>
-    <button id="startButton">Begin Journey</button>
-    <div id="countdown"></div>
-    <div class="message"></div>
-    <button id="musicToggle">🎵</button>
+
+    <div class="photo-grid">
+        <!-- Will be populated by JavaScript -->
+    </div>
+
+    <div class="memory-message">
+        <button class="close-button">×</button>
+        <p></p>
+    </div>
 
     <script>
-        // Configuration
-        const config = {
-            photos: [
-                '1.jpg',
-                '2.jpg',
-                '3.jpg',
-                '4.jpg',
-                '5.jpg'
-            ],
-            messages: [
-                "Here's to another year of amazing friendship! 🎉",
-                "Thank you for all the wonderful memories! You both are so cute 💫",
-                "Looking forward to more adventures together! I need to visit you more often! 🌟",
-                "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂",
-                "May 2025 bring us even more joy! Love you both so much ✨"
-            ],
-            positions: [
-                { top: '25%', left: '20%' },
-                { top: '25%', left: '50%' },
-                { top: '25%', left: '80%' },
-                { top: '65%', left: '35%' },
-                { top: '65%', left: '65%' }
-            ]
-        };
+        // Simple configuration
+        const memories = [
+            {
+                image: '1.jpg',
+                message: "Here's to another year of amazing friendship! 🎉"
+            },
+            {
+                image: '2.jpg',
+                message: "Thank you for all the wonderful memories! You both are so cute 💫"
+            },
+            {
+                image: '3.jpg',
+                message: "Looking forward to more adventures together! I need to visit you more often! 🌟"
+            },
+            {
+                image: '4.jpg',
+                message: "Cheers to our incredible journey! I'm still in disbelief that you asked me to play such an important part of your wedding 🥂"
+            },
+            {
+                image: '5.jpg',
+                message: "May 2025 bring us even more joy! Love you both so much ✨"
+            }
+        ];
 
-        // Audio setup
-        const music = new Audio('/vlad/1.mp3');
-        music.loop = true;
+        // Create memory cards
+        const grid = document.querySelector('.photo-grid');
+        memories.forEach((memory, index) => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            
+            const img = document.createElement('img');
+            img.src = memory.image;
+            img.alt = `Memory ${index + 1}`;
+            
+            card.appendChild(img);
+            grid.appendChild(card);
 
-        // Fireworks
+            // Add click handler
+            card.addEventListener('click', () => showMessage(memory.message));
+        });
+
+        // Message display
+        const messageBox = document.querySelector('.memory-message');
+        const messageText = messageBox.querySelector('p');
+        const closeButton = document.querySelector('.close-button');
+
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            createFirework();
+        }
+
+        // Close message when clicking the close button
+        closeButton.addEventListener('click', () => {
+            messageBox.style.display = 'none';
+        });
+
+        // Close message when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === messageBox) {
+                messageBox.style.display = 'none';
+            }
+        });
+
+        // Simple firework effect
         function createFirework() {
             const firework = document.createElement('div');
             firework.className = 'firework';
@@ -208,129 +202,18 @@
             firework.style.left = x + 'px';
             firework.style.top = y + 'px';
             
-            // Create particles
-            const particles = 30;
-            const colors = ['#ff0', '#f0f', '#0ff', '#fff'];
+            // Random color
+            const colors = ['#fbbf24', '#60a5fa', '#f472b6', '#34d399'];
+            firework.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, transparent)`;
             
-            for(let i = 0; i < particles; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'explosion';
-                
-                // Random angle and distance
-                const angle = (i / particles) * Math.PI * 2;
-                const distance = 100 + Math.random() * 50;
-                
-                // Calculate final position
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                
-                particle.style.setProperty('--tx', `${tx}px`);
-                particle.style.setProperty('--ty', `${ty}px`);
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                firework.appendChild(particle);
-            }
+            // Animate
+            firework.style.animation = 'firework 1s ease-out forwards';
             
             document.body.appendChild(firework);
             
             // Remove after animation
-            setTimeout(() => {
-                firework.remove();
-            }, 1000);
+            setTimeout(() => firework.remove(), 1000);
         }
-
-        // Show message when photo is clicked
-        function showMessage(text, element) {
-            const message = document.querySelector('.message');
-            const rect = element.getBoundingClientRect();
-            
-            message.textContent = text;
-            message.style.display = 'block';
-            message.style.left = rect.left + (rect.width - message.offsetWidth) / 2 + 'px';
-            message.style.top = rect.bottom + 20 + 'px';
-
-            // Hide message when clicking anywhere
-            setTimeout(() => {
-                document.onclick = () => {
-                    message.style.display = 'none';
-                    document.onclick = null;
-                };
-            }, 100);
-        }
-
-        // Show photos with animation
-        function showPhotos() {
-            config.photos.forEach((photo, i) => {
-                const container = document.createElement('div');
-                container.className = 'photo-container';
-                
-                // Set random rotation
-                const rotation = Math.random() * 20 - 10;
-                container.style.setProperty('--rotation', `${rotation}deg`);
-                
-                const img = document.createElement('img');
-                img.src = photo;
-                container.appendChild(img);
-                document.body.appendChild(container);
-
-                // Position the photo
-                container.style.top = config.positions[i].top;
-                container.style.left = config.positions[i].left;
-
-                // Add click handler
-                container.onclick = () => {
-                    showMessage(config.messages[i], container);
-                    createFirework(); // Create firework on click
-                };
-
-                // Animate in with delay
-                setTimeout(() => {
-                    container.classList.add('show');
-                }, i * 300);
-            });
-
-            // Start periodic fireworks
-            setInterval(createFirework, 2000);
-        }
-
-        // Start the celebration
-        document.getElementById('startButton').onclick = () => {
-            const startButton = document.getElementById('startButton');
-            const countdown = document.getElementById('countdown');
-            
-            startButton.style.display = 'none';
-            countdown.style.display = 'block';
-            
-            let count = 5;
-            countdown.textContent = count;
-
-            const interval = setInterval(() => {
-                count--;
-                countdown.textContent = count;
-                
-                if (count === 0) {
-                    clearInterval(interval);
-                    countdown.style.display = 'none';
-                    showPhotos();
-                    music.play();
-                    // Initial fireworks
-                    for(let i = 0; i < 5; i++) {
-                        setTimeout(createFirework, i * 200);
-                    }
-                }
-            }, 1000);
-        };
-
-        // Music toggle
-        document.getElementById('musicToggle').onclick = () => {
-            if (music.paused) {
-                music.play();
-                document.getElementById('musicToggle').textContent = '⏸';
-            } else {
-                music.pause();
-                document.getElementById('musicToggle').textContent = '🎵';
-            }
-        };
     </script>
 </body>
 </html>
