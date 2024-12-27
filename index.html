@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
 
         .header {
@@ -41,6 +42,14 @@
             gap: 2rem;
             padding: 2rem;
             max-width: 1200px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .photo-grid.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .memory-card {
@@ -71,7 +80,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0);
             background: rgba(255, 255, 255, 0.95);
             padding: 2rem;
             border-radius: 12px;
@@ -82,6 +91,11 @@
             display: none;
             z-index: 1000;
             font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .memory-message.visible {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .close-button {
@@ -95,19 +109,78 @@
             color: #1a1a1a;
         }
 
-        /* Simple Firework Effect */
-        @keyframes firework {
-            0% { transform: translate(-50%, -50%); width: 0; opacity: 1; }
-            50% { width: 100px; opacity: 0.8; }
-            100% { width: 200px; opacity: 0; }
+        #start-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #60a5fa;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem;
         }
 
+        #start-button:hover {
+            background: rgba(96, 165, 250, 0.2);
+            transform: scale(1.1);
+        }
+
+        #countdown {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            font-weight: bold;
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        /* Enhanced Firework Effect */
         .firework {
-            position: absolute;
+            position: fixed;
             pointer-events: none;
-            background: radial-gradient(circle, #fbbf24, transparent);
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
-            aspect-ratio: 1;
+            animation: spark 1s ease-out forwards;
+        }
+
+        @keyframes spark {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        #music-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1000;
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        #music-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -116,6 +189,10 @@
         <div class="year">2025</div>
         <div class="names">VLAD & SCAR</div>
     </div>
+
+    <button id="start-button">Begin Journey</button>
+
+    <div id="countdown"></div>
 
     <div class="photo-grid">
         <!-- Will be populated by JavaScript -->
@@ -126,8 +203,10 @@
         <p></p>
     </div>
 
+    <button id="music-toggle">🎵</button>
+
     <script>
-        // Simple configuration
+        // Configuration
         const memories = [
             {
                 image: '1.JPG',
@@ -151,6 +230,10 @@
             }
         ];
 
+        // Audio setup
+        const music = new Audio('1.mp3');
+        music.loop = true;
+
         // Create memory cards
         const grid = document.querySelector('.photo-grid');
         memories.forEach((memory, index) => {
@@ -164,11 +247,10 @@
             card.appendChild(img);
             grid.appendChild(card);
 
-            // Add click handler
             card.addEventListener('click', () => showMessage(memory.message));
         });
 
-        // Message display
+        // Message handling
         const messageBox = document.querySelector('.memory-message');
         const messageText = messageBox.querySelector('p');
         const closeButton = document.querySelector('.close-button');
@@ -176,22 +258,22 @@
         function showMessage(message) {
             messageText.textContent = message;
             messageBox.style.display = 'block';
+            setTimeout(() => messageBox.classList.add('visible'), 10);
+            createFirework();
             createFirework();
         }
 
-        // Close message when clicking the close button
-        closeButton.addEventListener('click', () => {
-            messageBox.style.display = 'none';
-        });
+        function hideMessage() {
+            messageBox.classList.remove('visible');
+            setTimeout(() => messageBox.style.display = 'none', 300);
+        }
 
-        // Close message when clicking outside
+        closeButton.addEventListener('click', hideMessage);
         window.addEventListener('click', (e) => {
-            if (e.target === messageBox) {
-                messageBox.style.display = 'none';
-            }
+            if (e.target === messageBox) hideMessage();
         });
 
-        // Simple firework effect
+        // Enhanced firework effect
         function createFirework() {
             const firework = document.createElement('div');
             firework.className = 'firework';
@@ -202,18 +284,78 @@
             firework.style.left = x + 'px';
             firework.style.top = y + 'px';
             
-            // Random color
-            const colors = ['#fbbf24', '#60a5fa', '#f472b6', '#34d399'];
-            firework.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, transparent)`;
+            // Create sparks
+            const sparkCount = 30;
+            const colors = ['#fbbf24', '#60a5fa', '#f472b6', '#34d399', '#ffffff'];
             
-            // Animate
-            firework.style.animation = 'firework 1s ease-out forwards';
+            for (let i = 0; i < sparkCount; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                
+                // Calculate trajectory
+                const angle = (i / sparkCount) * Math.PI * 2;
+                const velocity = 100 + Math.random() * 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                
+                spark.style.setProperty('--tx', `${tx}px`);
+                spark.style.setProperty('--ty', `${ty}px`);
+                spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                firework.appendChild(spark);
+            }
             
             document.body.appendChild(firework);
-            
-            // Remove after animation
             setTimeout(() => firework.remove(), 1000);
         }
+
+        // Countdown and start functionality
+        const startButton = document.getElementById('start-button');
+        const countdownDisplay = document.getElementById('countdown');
+
+        startButton.addEventListener('click', () => {
+            startButton.style.display = 'none';
+            countdownDisplay.style.display = 'block';
+            
+            let count = 5;
+            countdownDisplay.textContent = count;
+
+            const countdownInterval = setInterval(() => {
+                count--;
+                countdownDisplay.textContent = count;
+                
+                if (count === 0) {
+                    clearInterval(countdownInterval);
+                    countdownDisplay.style.display = 'none';
+                    grid.classList.add('visible');
+                    music.play();
+                    
+                    // Initial fireworks
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => createFirework(), i * 200);
+                    }
+
+                    // Periodic fireworks
+                    setInterval(() => {
+                        if (Math.random() < 0.3) { // 30% chance every 2 seconds
+                            createFirework();
+                        }
+                    }, 2000);
+                }
+            }, 1000);
+        });
+
+        // Music toggle
+        const musicToggle = document.getElementById('music-toggle');
+        musicToggle.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                musicToggle.textContent = '⏸️';
+            } else {
+                music.pause();
+                musicToggle.textContent = '🎵';
+            }
+        });
     </script>
 </body>
 </html>
