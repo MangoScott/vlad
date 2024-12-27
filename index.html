@@ -75,7 +75,7 @@
         }
 
         .memory {
-            position: absolute;
+            position: fixed; /* Changed from absolute to fixed */
             width: 200px;
             height: 200px;
             border-radius: 20px;
@@ -84,13 +84,11 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             opacity: 0;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
             transform-origin: center;
             pointer-events: auto;
-            animation: float 6s ease-in-out infinite;
-            z-index: 100;
-            background-color: white;
+            z-index: 1000; /* Increased z-index */
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
         }
 
         @keyframes float {
@@ -413,13 +411,13 @@
         confettiCanvas.width = window.innerWidth;
         confettiCanvas.height = window.innerHeight;
 
-        // Photo paths - make sure these files exist in your directory
+        // Photo paths with absolute leading slash removed
         const photos = [
-            '1.jpg',
-            '2.jpg',
-            '3.jpg',
-            '4.jpg',
-            '5.jpg'
+            './1.jpg',  // Using relative path with ./
+            './2.jpg',
+            './3.jpg',
+            './4.jpg',
+            './5.jpg'
         ];
 
         const messages = [
@@ -634,32 +632,63 @@
             const videoButton = document.querySelector('.video-button');
             videoButton.style.display = 'block';
 
+            console.log('Starting to create memories...');
             const memoriesContainer = document.querySelector('.memories');
+            
+            // Clear any existing memories
+            memoriesContainer.innerHTML = '';
+            
+            // Fixed positions for testing
+            const positions = [
+                { x: 200, y: 200 },
+                { x: 400, y: 200 },
+                { x: 600, y: 200 },
+                { x: 300, y: 400 },
+                { x: 500, y: 400 }
+            ];
+
             photos.forEach((photo, index) => {
+                console.log(`Creating memory ${index + 1} with photo: ${photo}`);
+                
                 const memory = document.createElement('div');
                 memory.className = 'memory';
+                memory.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                
                 const img = document.createElement('img');
                 img.src = photo;
-                img.onload = () => console.log(`Photo ${index + 1} loaded successfully`);
-                img.onerror = () => console.log(`Error loading photo ${index + 1}: ${photo}`);
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                
+                img.onload = () => {
+                    console.log(`Photo ${index + 1} loaded successfully:`, photo);
+                };
+                
+                img.onerror = (e) => {
+                    console.error(`Error loading photo ${index + 1}:`, photo, e);
+                    // Show a colored div with the file path that failed to load
+                    memory.style.backgroundColor = '#60a5fa';
+                    const text = document.createElement('div');
+                    text.style.color = 'white';
+                    text.style.padding = '10px';
+                    text.style.textAlign = 'center';
+                    text.innerHTML = `Failed to load:<br>${photo}`;
+                    memory.appendChild(text);
+                };
+                
                 memory.appendChild(img);
                 memoriesContainer.appendChild(memory);
-
-                // Position photos in a circular pattern around the center
-                const angle = (index / photos.length) * Math.PI * 2;
-                const radius = Math.min(window.innerWidth, window.innerHeight) * 0.25;
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
                 
-                // Log photo positioning for debugging
-                console.log(`Photo ${index + 1} position:`, { x, y });
-
+                const { x, y } = positions[index];
+                
+                // Make memory immediately visible for debugging
+                memory.style.opacity = '0';
+                memory.style.transform = `translate(${x}px, ${y}px)`;
+                
+                // Fade in with delay
                 setTimeout(() => {
                     memory.style.opacity = '1';
-                    memory.style.transform = `translate(${x - 100}px, ${y - 100}px) rotate(${Math.random() * 10 - 5}deg)`;
-                    addFirework(x, y);
+                    addFirework(x + 100, y + 100);
                 }, index * 800);
 
                 memory.addEventListener('click', () => {
